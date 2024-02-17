@@ -4,6 +4,7 @@ import { Status } from './Status';
 import Patient from './Patient';
 
 export default interface FoodOrder {
+    _id: string;
     meal: Meal;
     food: Food;
     for: Patient;

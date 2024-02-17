@@ -1,15 +1,84 @@
-from typing import Union
-from pydantic import BaseModel
+from contextlib import asynccontextmanager
+from pydantic import BaseModel, Field
 from fastapi import FastAPI
+from enum import Enum
+from typing import List, Literal, Tuple, Union
+from beanie import Document, PydanticObjectId, init_beanie
+from motor.motor_asyncio import AsyncIOMotorClient
 
-app = FastAPI()
+@asynccontextmanager
+async def lifespan(app : FastAPI):
+    # before server starts
+    print("Hello")
+    await init(app)
+    yield
 
+    # before server ends
+    print("World")
+    pass
 
-@app.get("/")
-def read_root():
-    return {"Hello": "World"}
+class DietOptions(Enum):
+    REGULAR = "REGULAR"
+    CONSISTANTCARB = "CONSISTANTCARB"
+    CARDIAC = "CARDIAC"
+class Meal(Enum):
+    BREAKFAST = "BREAKFAST"
+    LUNCH = "LUNCH"
+    DINNER = "DINNER"
+class Status(Enum):
+    PROCESSING = "PROCESSING"
+    TRANSIT = "TRANSIT"
+    DELIVERED = "DELIVERED"
 
+DietOptionsType = Union[DietOptions, str]
+MealType = Union[Meal, str]
+StatusType = Union[Status, str]
 
-@app.get("/items/{item_id}")
-def read_item(item_id: int, q: Union[str, None] = None):
-    return {"item_id": item_id, "q": q}
+class Patient(Document):
+    first_name: str
+    last_name: str
+    phone_number: str
+    email: str
+    diet: List[DietOptionsType]
+    allergies: List[str]
+
+class Food: 
+    name: str
+    restricted_diets: List[DietOptionsType] = Field(default=[])
+
+class FoodOrder:
+    meal: Meal
+    food: List[Food]
+    status: StatusType = Field(default=Status.PROCESSING)
+    delivered: bool = Field(default=False)
+
+async def init(app):
+    # connect to mongo
+    client = AsyncIOMotorClient("mongodb+srv://jduhking:Bab0debiyi_84@cluster0.f4envrr.mongodb.net/?retryWrites=true&w=majority")
+    db = client.prod
+    await init_beanie(database=db, document_models = [Patient], allow_index_dropping=True)
+    try:
+        info = await client.server_info()
+        print(f"success, connected to {info}")
+    except Exception as e:
+        print(f"Failed with exception {e}")
+    pass
+
+app = FastAPI(lifespan=lifespan)
+
+@app.get("/patients")
+async def get_patients() -> List[Patient]:
+    patients = await Patient.find_all().to_list()
+    print(patients)
+    return patients
+
+@app.get("/test")
+async def test() -> Patient:
+
+    user = await Patient.find_one({"first_name":  "Blessing"})
+    
+    if not user:
+        user = Patient(first_name="Blessing", last_name="Odebiyi", phone_number="469-223-9792", email="blessingbodebiyi@gmail.com", diet=[DietOptions.REGULAR], allergies=[])
+        await user.save()
+        
+    return user

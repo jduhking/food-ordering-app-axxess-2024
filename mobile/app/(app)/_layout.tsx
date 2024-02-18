@@ -11,6 +11,13 @@ const AppLayout = () => {
         presentation: 'fullScreenModal'
       }}
       />
+        <Stack.Screen
+      name="shopping-cart/index"
+      options={{
+        title: "shopping-cart",
+        presentation: 'fullScreenModal'
+      }}
+      />
     </Stack>
     )
 }

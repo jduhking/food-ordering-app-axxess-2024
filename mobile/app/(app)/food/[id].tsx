@@ -24,13 +24,27 @@ export default function FoodDetails() {
         return;
 
       let newCart: Food[] = [];
-      if(cart.some((item: Food) => item._id === id)){ // if item is already on cart then remove it
-        newCart = cart.filter((cart) => { return cart._id !== id});
-      } else {
-        // add the item to the cart
-        newCart = [...cart, food]
-      }
-      setCart(newCart);
+      
+      const indexToUpdate = cart.findIndex(cartItem => cartItem._id === id);
+
+
+         // Find the index of the item in the cart array
+         
+         //@ts-ignore
+         if (indexToUpdate !== -1 && cart[indexToUpdate].quantity > 0) {
+             // Decrement the quantity of the item
+             //@ts-ignore
+            cart[indexToUpdate].quantity = 0;
+            const updatedCart = cart.filter((_, index) => index !== indexToUpdate);
+            // Update the cart state
+            setCart(updatedCart);
+         } else {
+          // add the item to the cart
+          newCart = [...cart, food];
+          food.quantity = 1;
+          setCart(newCart);
+        }
+      
     }
   return (
     <View style={styles.container}>

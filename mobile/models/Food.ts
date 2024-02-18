@@ -6,5 +6,5 @@ export default interface Food {
     name: string;
     restricted_diets: Diets[];
     category: Category;
-
+    quantity?: number;
 }

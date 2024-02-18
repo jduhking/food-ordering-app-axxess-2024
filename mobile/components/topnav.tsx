@@ -1,10 +1,11 @@
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import React from 'react';
 import { ShoppingIcon } from '@/icons/shopping';
 import ProfileIcon from '@/components/profile-icon';
 import { useAppStore } from '@/state/store';
 import Patient from '@/models/Patient';
 import { screenWidth } from '@/utils/Dimensions';
+import { Link } from 'expo-router';
 
 const TopNav = () => {
     const patient: Patient | undefined = useAppStore((state) => state.patient);
@@ -25,28 +26,34 @@ const TopNav = () => {
             </> ): (<Text>Patient does not exist</Text>)
         } 
        </View>
-       <View>   
-        <ShoppingIcon size={32}/>
-        {
-          cart.length > 0 && (
-            <View
-            style={{
-              position: 'absolute',
-              justifyContent: 'center',
-              alignItems: 'center',
-              backgroundColor: 'red',
-              width: screenWidth * 0.042,
-              height: screenWidth * 0.042,
-              borderRadius: 200,
-              top: -5,
-              left: -5
-            }}>
-              <Text style={{
-                color: 'white'
-              }}>{cart.length}</Text>
-            </View>
-          )
-        }
+       <View>  
+        <Link
+        href={'/shopping-cart/'}
+        asChild>
+          <TouchableOpacity>
+            <ShoppingIcon size={32}/>
+            {
+              cart.length > 0 && (
+                <View
+                style={{
+                  position: 'absolute',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  backgroundColor: 'red',
+                  width: screenWidth * 0.042,
+                  height: screenWidth * 0.042,
+                  borderRadius: 200,
+                  top: -5,
+                  left: -5
+                }}>
+                  <Text style={{
+                    color: 'white'
+                  }}>{cart.length}</Text>
+                </View>
+              )
+            }
+            </TouchableOpacity>
+          </Link> 
        </View>
       </View>
   )

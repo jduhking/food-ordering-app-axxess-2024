@@ -6,7 +6,7 @@ const AppLayout = () => {
     headerShown: false
      }}>
       <Stack.Screen
-      name="food/[id]"
+      name="food/[name]"
       options={{
         presentation: 'fullScreenModal'
       }}
@@ -15,6 +15,13 @@ const AppLayout = () => {
       name="shopping-cart/index"
       options={{
         title: "shopping-cart",
+        presentation: 'fullScreenModal'
+      }}
+      />
+          <Stack.Screen
+      name="patient/[name]"
+      options={{
+        title: "patient-screen",
         presentation: 'fullScreenModal'
       }}
       />

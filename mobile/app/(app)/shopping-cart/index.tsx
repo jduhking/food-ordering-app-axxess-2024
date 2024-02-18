@@ -5,12 +5,19 @@ import BackButton from '@/components/back-button'
 import { useAppStore } from '@/state/store'
 import Food from '@/models/Food'
 import { useSafeAreaInsets } from 'react-native-safe-area-context'
+import axios from 'axios'
+import FoodOrder from '@/models/FoodOrder'
+import { Meal } from '@/models/Meal'
+import { Status } from '@/models/Status'
+import { useRouter } from 'expo-router'
 
 const ShoppingCart = () => {
     const { bottom } = useSafeAreaInsets();
     const cart: Food[] = useAppStore((state) => state.cart);
     const setCart = useAppStore((state) => state.setCart);
-
+    const patient = useAppStore((state) => state.patient);
+    const router = useRouter();
+    
     const renderItem = ({ item } : ListRenderItemInfo<Food>) => {
         const handleAdd = () => {
             if(!item && cart) // make sure food is defined
@@ -83,9 +90,37 @@ const ShoppingCart = () => {
         )
     }
 
-    const handleSubmit = () =>{
-        console.log('Submitting shopping cart with items: ')
-        console.log(cart) 
+    const handleSubmit = async () =>{
+        console.log('Submitting shopping cart with items: ');
+        const server_url = process.env.EXPO_PUBLIC_BACKEND_URL;
+        console.log(`This is the server ${server_url}`)
+        // console.log(cart) 
+        console.log(patient)
+        const food_order: FoodOrder = {
+            food: cart,
+            meal: Meal.BREAKFAST,
+            recipient: patient!,
+            delivered: false,
+            status: Status.PROCESSING,
+        }
+        console.log(food_order)
+        try {
+            const { data } = await axios.post(server_url + '/order_food', JSON.stringify(food_order), {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },
+            });
+            console.log(data);
+            
+            console.log(data)
+            console.log('Once successful, reset the cart and close the modal');
+            setCart([]);
+            router.back();
+        } catch(err){
+            console.log(err);
+        }
+        
     }
   return (
     <View style={[styles.container, { paddingBottom: bottom}]}>
@@ -93,7 +128,7 @@ const ShoppingCart = () => {
         <FlatList 
         data={cart}
         renderItem={renderItem}
-        keyExtractor={(item) => { return item._id }}/>
+        keyExtractor={(item) => { return item._id! }}/>
         <View style={{ alignItems: 'center'}}>
             <TouchableOpacity
             onPress={handleSubmit}>

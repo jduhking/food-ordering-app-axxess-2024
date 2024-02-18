@@ -1,9 +1,10 @@
-import { StyleSheet, Text, View, FlatList, ListRenderItemInfo, TouchableOpacity } from 'react-native'
+import { StyleSheet, Text, View, FlatList, ListRenderItemInfo, TouchableOpacity, Image } from 'react-native'
 import React, { useMemo, useState } from 'react'
 import Food from '@/models/Food'
 import { screenWidth } from '@/utils/Dimensions'
 import { Link, useRouter } from 'expo-router'
 import { Category } from '@/models/Category'
+import { PlusIcon } from '@/icons/plus'
 
 const FoodsList = ({ foods, categoryFilter, search } : { foods : Food[], categoryFilter: Category | undefined, search: string | undefined}) => {
 
@@ -14,9 +15,20 @@ const FoodsList = ({ foods, categoryFilter, search } : { foods : Food[], categor
   const foodRenderItem = ({ item } : ListRenderItemInfo<Food>) => {
 
       return (       /* @ts-ignore */
-        <Link href={`food/${item._id}`}
+        <Link href={`food/${item.name}`}
         asChild >
-          <TouchableOpacity style={styles.foodContainer} >
+          <TouchableOpacity style={styles.foodContainer} >  
+            <View style={styles.foodImageContainer}>
+              <Image 
+              style={styles.picture}
+              source={{ uri: item.picture_link}}
+              />
+            </View>
+            <View
+            style={{ position: 'absolute',
+            right: '5%', top: '5%'}}>
+              <PlusIcon size={32} color={"#780000"}/>
+            </View>
             <Text>{item.name}</Text>
           </TouchableOpacity>
         </Link>
@@ -31,7 +43,7 @@ const FoodsList = ({ foods, categoryFilter, search } : { foods : Food[], categor
     contentContainerStyle={{ paddingVertical: '5%'}}
     columnWrapperStyle={{justifyContent:'space-between', }}
     renderItem={foodRenderItem}
-    keyExtractor={(food: Food) => { return food._id}}
+    keyExtractor={(food: Food) => { return food._id!}}
     />
   </View>
   )
@@ -50,5 +62,17 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         marginBottom: '5%',
-    }
+    },
+    foodImageContainer: {
+      width: screenWidth * 0.25,
+      height: screenWidth * 0.25,
+      borderRadius: 200,
+      marginBottom: '5%',
+      overflow: 'hidden'
+  },
+  picture: {
+      resizeMode: "cover",
+      width: "100%",
+      height: "100%",
+    },
 })

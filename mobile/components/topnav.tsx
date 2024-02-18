@@ -6,55 +6,72 @@ import { useAppStore } from '@/state/store';
 import Patient from '@/models/Patient';
 import { screenWidth } from '@/utils/Dimensions';
 import { Link } from 'expo-router';
+import { Meal } from '@/models/Meal';
 
 const TopNav = () => {
     const patient: Patient | undefined = useAppStore((state) => state.patient);
     const cart = useAppStore((state) => state.cart);
+    const getTime = () => {
+      // Get the current date and time
+      const currentTime = new Date();
+      const currentHour = currentTime.getHours();
+
+      // Define the greetings based on the time of day
+      let greeting;
+      if (currentHour < 12) {
+          return Meal.BREAKFAST;
+      } else if (currentHour < 18) {
+        return Meal.LUNCH
+      } else {
+        return Meal.DINNER
+      }
+
+    }
+    const time: Meal = getTime();
   return (
     <View style={styles.topNav}>
-      <View style={{ flexDirection: 'row', flex: 1}}>
+      <View style={{ flexDirection: 'row', flex: 1, alignItems: 'center', backgroundColor: 'white', borderRadius: 60, justifyContent: 'space-around', paddingHorizontal: '5%', paddingVertical: '2%', }}>
         {
           patient ? (
             <>
               <View style={{ marginRight: '5%'}}>
-                <ProfileIcon picture_link={patient.picture_link} />
+                <ProfileIcon patient={patient} />
               </View>
               <View>
-                <Text>{patient.first_name}</Text>
-                <Text>{patient.last_name}</Text>
+                <Text style={{ fontSize: 22, fontWeight: '600'}}>Good {time === Meal.BREAKFAST ? "Morning" : time === Meal.LUNCH ? "Afternoon" : "Evening" }, {patient.first_name} 👋</Text>
               </View>
             </> ): (<Text>Patient does not exist</Text>)
         } 
-       </View>
-       <View>  
-        <Link
-        href={'/shopping-cart/'}
-        asChild>
-          <TouchableOpacity>
-            <ShoppingIcon size={32}/>
-            {
-              cart.length > 0 && (
-                <View
-                style={{
-                  position: 'absolute',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  backgroundColor: 'red',
-                  width: screenWidth * 0.042,
-                  height: screenWidth * 0.042,
-                  borderRadius: 200,
-                  top: -5,
-                  left: -5
-                }}>
-                  <Text style={{
-                    color: 'white'
-                  }}>{cart.length}</Text>
-                </View>
-              )
-            }
-            </TouchableOpacity>
-          </Link> 
-       </View>
+        <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'flex-end'}}>
+          <Link
+          href={'/shopping-cart/'}
+          asChild>
+            <TouchableOpacity>
+              <ShoppingIcon size={32}/>
+              {
+                cart.length > 0 && (
+                  <View
+                  style={{
+                    position: 'absolute',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    backgroundColor: 'red',
+                    width: screenWidth * 0.042,
+                    height: screenWidth * 0.042,
+                    borderRadius: 200,
+                    top: -5,
+                    left: -5
+                  }}>
+                    <Text style={{
+                      color: 'white'
+                    }}>{cart.length}</Text>
+                  </View>
+                )
+              }
+              </TouchableOpacity>
+            </Link> 
+          </View>
+          </View> 
       </View>
   )
 }
@@ -64,10 +81,9 @@ export default TopNav
 const styles = StyleSheet.create({
     topNav: {
         flexDirection: 'row', 
-        paddingHorizontal: '5%',
+        paddingHorizontal: '2%',
         justifyContent: 'space-around',
-        borderBottomWidth: 1,
-        borderBottomColor: '#a8a8a8',
         paddingVertical: '2%',
+        
     }, 
 })

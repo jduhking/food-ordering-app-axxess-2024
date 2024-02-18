@@ -4,10 +4,10 @@ import { Status } from './Status';
 import Patient from './Patient';
 
 export default interface FoodOrder {
-    _id: string;
+    _id?: string;
     meal: Meal;
-    food: Food;
-    for: Patient;
+    food: Food[];
+    recipient: Patient;
     status: Status;
     delivered: boolean;
 }

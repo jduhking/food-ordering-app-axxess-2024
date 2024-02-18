@@ -14,9 +14,9 @@ const Categories = ({ categories, setCategoryFilter, categoryFilter } : { catego
           }
         }
         return (
-          <TouchableOpacity style={styles.category}
+          <TouchableOpacity style={[styles.category, categoryFilter === item ? { borderColor: '#c1121f', borderWidth: 1.5} : {}]}
           onPress={handleSelection}>
-            <Text style={{ textAlign: 'center'}}>{ item }</Text>
+            <Text style={{ textAlign: 'center', fontWeight: 'bold', color: categoryFilter === item ? '#c1121f' : 'black'}}>{ item }</Text>
           </TouchableOpacity>
         )
       }
@@ -51,7 +51,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: 'white',
-        borderColor: '#a8a8a8',
+        borderColor: '#003049',
         borderWidth: 1
     }
 })

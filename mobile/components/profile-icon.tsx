@@ -1,11 +1,17 @@
-import { StyleSheet, Text, View, Image } from 'react-native'
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native'
 import React from 'react'
+import { Link } from 'expo-router'
+import Patient from '@/models/Patient'
 
-const ProfileIcon = ({ picture_link } : { picture_link: string}) => {
+const ProfileIcon = ({ patient } : { patient: Patient}) => {
   return (
-    <View style={styles.profileContainer}>
-      <Image source={{ uri: picture_link}} style={styles.picture}/>
-    </View>
+    <Link
+    asChild //@ts-ignore
+    href={'/patient/' + patient.first_name}>
+      <TouchableOpacity style={styles.profileContainer}>
+        <Image source={{ uri: patient.picture_link}} style={styles.picture}/>
+      </TouchableOpacity>
+    </Link>
   )
 }
 

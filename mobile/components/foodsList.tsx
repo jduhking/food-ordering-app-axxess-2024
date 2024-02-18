@@ -5,10 +5,10 @@ import { screenWidth } from '@/utils/Dimensions'
 import { Link, useRouter } from 'expo-router'
 import { Category } from '@/models/Category'
 
-const FoodsList = ({ foods, categoryFilter } : { foods : Food[], categoryFilter: Category | undefined }) => {
+const FoodsList = ({ foods, categoryFilter, search } : { foods : Food[], categoryFilter: Category | undefined, search: string | undefined}) => {
 
-  const filteredFoods = useMemo(() => foods.filter((food) => !categoryFilter || food.category === categoryFilter ), [foods, categoryFilter]);
-
+  const filteredFoods = useMemo(() => foods.filter((food) => !categoryFilter || food.category === categoryFilter).filter((food) => (!search || search.length > 0 && food.name.toLowerCase().includes(search.toLowerCase()))), [foods, categoryFilter, search]);
+  console.log(search)
   const router = useRouter();
      
   const foodRenderItem = ({ item } : ListRenderItemInfo<Food>) => {

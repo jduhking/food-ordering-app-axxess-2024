@@ -4,9 +4,11 @@ import { ShoppingIcon } from '@/icons/shopping';
 import ProfileIcon from '@/components/profile-icon';
 import { useAppStore } from '@/state/store';
 import Patient from '@/models/Patient';
+import { screenWidth } from '@/utils/Dimensions';
 
 const TopNav = () => {
     const patient: Patient | undefined = useAppStore((state) => state.patient);
+    const cart = useAppStore((state) => state.cart);
   return (
     <View style={styles.topNav}>
       <View style={{ flexDirection: 'row', flex: 1}}>
@@ -23,7 +25,29 @@ const TopNav = () => {
             </> ): (<Text>Patient does not exist</Text>)
         } 
        </View>
-       <ShoppingIcon size={32}/>
+       <View>   
+        <ShoppingIcon size={32}/>
+        {
+          cart.length > 0 && (
+            <View
+            style={{
+              position: 'absolute',
+              justifyContent: 'center',
+              alignItems: 'center',
+              backgroundColor: 'red',
+              width: screenWidth * 0.042,
+              height: screenWidth * 0.042,
+              borderRadius: 200,
+              top: -5,
+              left: -5
+            }}>
+              <Text style={{
+                color: 'white'
+              }}>{cart.length}</Text>
+            </View>
+          )
+        }
+       </View>
       </View>
   )
 }

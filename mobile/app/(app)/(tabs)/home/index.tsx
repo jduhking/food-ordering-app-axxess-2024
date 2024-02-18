@@ -14,13 +14,13 @@ export default function HomeScreen() {
 
   const patient: Patient | undefined = useAppStore((state) => state.patient);
   const categories: Category[] = [Category.DRINK, Category.ENTREE, Category.SALAD, Category.SOUP, Category.SIDE]
-  const [search, setSearch] = useState('');
+  const [search, setSearch] = useState<string>();
   const [categoryFilter, setCategoryFilter] = useState<Category>();
+  const cart = useAppStore((state) => state.cart)
 
-  const onSearch = () => {
-    console.log('search');
+  const onSearch = (text: string) => {
+    setSearch(text)
   }
-
   return (
     <View style={styles.container}>
       <TopNav />
@@ -29,7 +29,7 @@ export default function HomeScreen() {
         <View style={{ paddingHorizontal: '5%'}}>
           <SearchBar onSearch={onSearch} value={search}/> 
         </View>
-        <FoodsList foods={foods} categoryFilter={categoryFilter} />
+        <FoodsList foods={foods} categoryFilter={categoryFilter} search={search} />
       </View>
     </View>
   );

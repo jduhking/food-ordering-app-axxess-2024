@@ -38,7 +38,7 @@ const TopNav = () => {
                 <ProfileIcon patient={patient} />
               </View>
               <View>
-                <Text style={{ fontSize: 22, fontWeight: '600'}}>Good {time === Meal.BREAKFAST ? "Morning" : time === Meal.LUNCH ? "Afternoon" : "Evening" }, {patient.first_name} 👋</Text>
+                <Text style={{ fontSize: 18, fontWeight: '600', fontFamily: 'SpaceMono'}}>Good {time === Meal.BREAKFAST ? "Morning" : time === Meal.LUNCH ? "Afternoon" : "Evening" }, {patient.first_name} 👋</Text>
               </View>
             </> ): (<Text>Patient does not exist</Text>)
         } 

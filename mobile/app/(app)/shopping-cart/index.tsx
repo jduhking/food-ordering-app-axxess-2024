@@ -1,6 +1,6 @@
-import { FlatList, ListRenderItemInfo, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { FlatList, ListRenderItemInfo, StyleSheet, Image, Text, TouchableOpacity, View } from 'react-native'
 import React from 'react'
-import { screenHeight } from '@/utils/Dimensions'
+import { screenHeight, screenWidth } from '@/utils/Dimensions'
 import BackButton from '@/components/back-button'
 import { useAppStore } from '@/state/store'
 import Food from '@/models/Food'
@@ -10,6 +10,7 @@ import FoodOrder from '@/models/FoodOrder'
 import { Meal } from '@/models/Meal'
 import { Status } from '@/models/Status'
 import { useRouter } from 'expo-router'
+import { Plus, Subtract } from '@/icons/math'
 
 const ShoppingCart = () => {
     const { bottom } = useSafeAreaInsets();
@@ -71,21 +72,32 @@ const ShoppingCart = () => {
         return (
             <View
             style={{
-                height: screenHeight * 0.1,
-                borderWidth: 1,
+                height: screenHeight * 0.25,
+                paddingVertical: '5%',
+                paddingHorizontal: '5%',
                 flexDirection: 'row',
                 alignItems: 'center',
-                justifyContent: 'space-evenly'
+                justifyContent: 'space-evenly',
+                borderBottomWidth: 1,
+                borderBottomColor: '#a8a8a8'
             }}>
-                <Text style={{fontSize: 20}}>{item.name}</Text>
+                <View style={styles.pictureContainer}>
+                <Image 
+                source={{uri: item.picture_link}}
+                style={styles.picture}/>
+                </View>
+                <Text style={{fontSize: 14}}>{item.name}</Text>
+                <View style={{ borderRadius: 15, borderWidth: 1, borderColor: '#a8a8a8', display: 'flex', paddingVertical: '2%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: screenWidth * 0.25 }}>
+                <TouchableOpacity
+                onPress={handleSubtract}
+           
+                ><Subtract size={25}/></TouchableOpacity>
                 <Text style={{fontSize: 32}} >{item.quantity ? item.quantity : 1}</Text>
                 <TouchableOpacity
                 onPress={handleAdd}
-           
-                ><Text style={{fontSize: 32}}>+</Text></TouchableOpacity>
-                <TouchableOpacity
-                onPress={handleSubtract}
-                ><Text style={{fontSize: 32}}>-</Text></TouchableOpacity>
+                ><Plus size={25}/></TouchableOpacity>
+                </View>
+        
             </View>
         )
     }
@@ -124,16 +136,52 @@ const ShoppingCart = () => {
     }
   return (
     <View style={[styles.container, { paddingBottom: bottom}]}>
-        <BackButton />
+        <View style={{ paddingHorizontal: '5%', borderBottomWidth: 1, borderBottomColor: '#a8a8a8'}}>
+        <View style={{ marginBottom: '10%'}}>
+            <BackButton />
+        </View>
+        <Text style={{fontSize: 32, fontFamily: 'SpaceMono', fontWeight: 'bold', marginBottom: '10%'}}>Shopping Cart</Text>
+        </View>
+        <View style={{ flex: 1, }}> 
         <FlatList 
         data={cart}
         renderItem={renderItem}
+        ListFooterComponentStyle={{
+            marginTop: '8%'
+        }}
+        ListFooterComponent={() => {
+            return (
+                <>
+                {
+                    cart && cart.length > 0 ?
+                    (
+                        <View style={{ paddingHorizontal: '10%'}}>
+                            <TouchableOpacity style={styles.buttonContainer}
+                            onPress={handleSubmit}>
+                                <Text style={{ color: 'white', fontSize: 22, fontFamily: 'SpaceMono',
+                            fontWeight: 'bold'}}>Submit</Text>
+                            </TouchableOpacity>
+                        </View> 
+                    ) : (
+                        <Text style={{
+                            textAlign: 'center',
+                            fontSize: 22,
+                            fontFamily: 'SpaceMono'
+                        }}>Your shopping cart is empty</Text>
+                    )
+                }
+            
+                </>
+            )
+        }}
+        contentContainerStyle={{
+            paddingBottom: '25%'
+        }}
         keyExtractor={(item) => { return item._id! }}/>
+        
         <View style={{ alignItems: 'center'}}>
-            <TouchableOpacity
-            onPress={handleSubmit}>
-                <Text>Submit</Text>
-            </TouchableOpacity>
+        </View>
+    
         </View>
     </View>
   )
@@ -147,4 +195,25 @@ const styles = StyleSheet.create({
         paddingTop: screenHeight * 0.08,
         backgroundColor: 'white',
       },
-})
+      pictureContainer: {
+        width: screenWidth * 0.3,
+        height: screenWidth * 0.3,
+        borderRadius: 25,
+        overflow: 'hidden',
+        
+    },
+    picture: {
+        resizeMode: "cover",
+        width: "100%",
+        height: "100%",
+      },
+      buttonContainer: {
+        backgroundColor: '#780000',
+        width: '100%',
+        height: screenWidth * 0.13,
+        borderRadius: 60,
+        justifyContent: 'center',
+        alignItems: 'center'
+      },
+    }
+    )

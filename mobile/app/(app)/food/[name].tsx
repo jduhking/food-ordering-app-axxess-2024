@@ -8,6 +8,7 @@ import { foods } from '@/utils/FoodDummy';
 import BackButton from '@/components/back-button';
 import { useAppStore } from '@/state/store';
 import axios from 'axios';
+import { Plus, Subtract } from '@/icons/math';
 
 export default function FoodDetails() {
     const { name } = useLocalSearchParams();
@@ -16,43 +17,69 @@ export default function FoodDetails() {
     const setCart = useAppStore((state) => state.setCart);
     
     useEffect(() => {
+      console.log(cart)
+    }, [cart])
+    useEffect(() => {
       // fetch the stuff
       const server_url = process.env.EXPO_PUBLIC_BACKEND_URL;
       const fetchFood = async () => {
         const { data } = await axios.get(server_url + '/food/' + name);
-        console.log(data);
+        // console.log(data);
         setFood(data);
       }
       fetchFood();
     }, [])
 
     const handleAdd = () => {
-      if(!food) // make sure food is defined
-        return;
-
-      let newCart: Food[] = [];
+      if(!food && cart) // make sure food is defined
+          return;
       
-      const indexToUpdate = cart.findIndex(cartItem => cartItem._id === food._id);
+      let newCart: Food[] = []
+
+      if(cart.some((food: Food) => food._id === food._id)){ // if food is already on cart then increment the quantity
+          const indexToUpdate = cart.findIndex(cartItem => cartItem._id === food?._id);
+          if (indexToUpdate !== -1) {
+              // Increment the quantity of the food
+              console.log(cart[indexToUpdate].quantity)
+              cart[indexToUpdate].quantity = (cart[indexToUpdate].quantity || 0) + 1;
+              // Update the cart state
+              setCart([...cart]);
+          }
+      } else {
+          // add the food to the cart
+          newCart = [...cart, food!]
+          setCart(newCart);   
+      }
+  }
+  const handleSubtract = () => {
+
+      if(!food && cart) // make sure food is defined
+          return;
+
+      // Find the index of the food in the cart array
+      const indexToUpdate = cart.findIndex(cartItem => cartItem._id === food?._id);
+
+      // Check if the item exists in the cart and its quantity is greater than 0
+      //@ts-ignore
+      if (indexToUpdate !== -1 && cart[indexToUpdate].quantity > 0) {
+          // Decrement the quantity of the item
+          //@ts-ignore
+          cart[indexToUpdate].quantity--;
+
+          // If quantity becomes zero, remove the item from the cart
+          if (cart[indexToUpdate].quantity === 0) {
+              // Create a new cart array excluding the item to remove
+              const updatedCart = cart.filter((_, index) => index !== indexToUpdate);
+              // Update the cart state
+              setCart(updatedCart);
+          } else {
+              // Update the cart state with the updated item
+              setCart([...cart]);
+          }
+      }
 
 
-         // Find the index of the item in the cart array
-         
-         //@ts-ignore
-         if (indexToUpdate !== -1 && cart[indexToUpdate].quantity > 0) {
-             // Decrement the quantity of the item
-             //@ts-ignore
-            cart[indexToUpdate].quantity = 0;
-            const updatedCart = cart.filter((_, index) => index !== indexToUpdate);
-            // Update the cart state
-            setCart(updatedCart);
-         } else {
-          // add the item to the cart
-          newCart = [...cart, food];
-          food.quantity = 1;
-          setCart(newCart);
-        }
-      
-    }
+  }
   return (
     <View style={styles.container}>
       <View style={{ marginBottom: '5%'}}>
@@ -70,17 +97,24 @@ export default function FoodDetails() {
       <Text style={{ fontSize: 25, marginBottom: '5%', fontWeight: 'bold'}}>{food?.name}</Text>
       <View style={{ width: '100%', borderBottomWidth: 1, marginBottom: '5%'}}></View>
       <Text style={{ fontSize: 25, marginBottom: '5%', fontWeight: 'bold'}}>Description: </Text>
-      <Text style={{ fontSize: 22, marginBottom: '5%', fontWeight: 'bold'}}>Calories: </Text>
-      <TouchableOpacity
-      style={styles.buttonContainer}
-      onPress={handleAdd}>
-        <Text style={{ fontSize: 28, color: 'white'}}>
-        {
-          cart.some((cart) => cart._id === food?._id) ? "Remove From Order" 
-          : "Add To Order"
-        }
-        </Text>
-      </TouchableOpacity>
+      <Text style={{ fontSize: 18, marginBottom: '5%'}}>{food?.description}</Text>
+      <Text style={{ fontSize: 25, marginBottom: '2%', fontWeight: 'bold'}}>Calories: {food?.calories} kcals</Text>
+      <Text style={{ fontSize: 25, marginBottom: '2%', fontWeight: 'bold'}}>Nutrition: </Text>
+      <Text style={{ fontSize: 18, marginBottom: '2%', fontWeight: 'bold'}}>Carbs: {food?.carbs} </Text>
+      <Text style={{ fontSize: 18, marginBottom: '2%', fontWeight: 'bold'}}>Protein: {food?.protein} </Text>
+      <Text style={{ fontSize: 18, marginBottom: '5%', fontWeight: 'bold'}}>Fat: {food?.fat} </Text>
+      <View style={{alignItems: 'center'}}>
+        <View style={{ borderRadius: 15, borderWidth: 1, borderColor: '#a8a8a8', display: 'flex', paddingVertical: '2%', flexDirection: 'row', justifyContent: 'space-around', alignItems: 'center', width: screenWidth * 0.25 }}>
+            <TouchableOpacity
+            onPress={handleSubtract}
+        
+            ><Subtract size={25}/></TouchableOpacity>
+            <Text style={{fontSize: 32}} >{food?.quantity}</Text>
+            <TouchableOpacity
+            onPress={handleAdd}
+            ><Plus size={25}/></TouchableOpacity>
+        </View>
+      </View>
       </View>
   )
 }

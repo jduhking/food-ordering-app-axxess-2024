@@ -1,10 +1,11 @@
-import { ActivityIndicator, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { ActivityIndicator, Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { useRouter } from 'expo-router'
-import { screenHeight } from '@/utils/Dimensions'
+import { screenHeight, screenWidth } from '@/utils/Dimensions'
 import { useAppStore } from '@/state/store'
 import Patient from '@/models/Patient'
 import { Diets } from '@/models/Diets'
+import { StatusBar } from 'expo-status-bar'
 
 
 const LoginPage = () => {
@@ -33,13 +34,33 @@ const LoginPage = () => {
     }
   return (
     <View  style={styles.container}>
-      <Text>You are on the Login Page</Text>
+      <StatusBar backgroundColor='dark'/>
+      <Text style={{ fontSize: 48, fontFamily: 'SpaceMono',
+    textAlign: 'center', marginBottom: '10%'}}>MealMed</Text>
+      <Text style={{ fontSize: 22, fontFamily: 'SpaceMono',
+    textAlign: 'center', fontWeight: '600', marginBottom: '10%', }}>Order food, and track your nutrition all in one app</Text>
+    
+    <Image source={require('../../assets/images/art.png')} 
+    style={{
+      width: 335.8,
+      height: 328,
+      marginBottom: '10%'
+    }}/>
+      
+      <View style={{ width: screenWidth * 0.8}}>
       {
-        loading ? (<ActivityIndicator />) : (
+        loading ? (
+        <View style={{ backgroundColor: '#780000', borderRadius: 60, justifyContent: 'center', alignItems: 'center',
+        height: screenHeight * 0.06}}><ActivityIndicator color="white" />
+        </View>) : (
           <TouchableOpacity
-          onPress={handleLogin}><Text>Login</Text></TouchableOpacity>
+          style={{ backgroundColor: '#780000', borderRadius: 60, justifyContent: 'center', alignItems: 'center',
+        height: screenHeight * 0.06}}
+          onPress={handleLogin}><Text
+          style={{ fontSize: 32, fontFamily: 'SpaceMono', color: 'white'}}>Login</Text></TouchableOpacity>
         )
       }
+      </View>
     </View>
   )
 }
@@ -50,6 +71,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: screenHeight * 0.1,
-    backgroundColor: 'white'
+    backgroundColor: '#fdf0d5',
+    paddingHorizontal: '5%',
+    alignItems: 'center'
   },
 })

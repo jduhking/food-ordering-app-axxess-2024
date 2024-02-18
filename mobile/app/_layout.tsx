@@ -3,6 +3,7 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { useFonts } from 'expo-font';
 import { Stack, Slot, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
+import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
 
@@ -36,7 +37,7 @@ const InitialLayout = () => {
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
-    SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
+    SpaceMono: require('../assets/fonts/Rubik.ttf'),
     ...FontAwesome.font,
   });
 
@@ -55,7 +56,12 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return (
+    <>
+    
+    <RootLayoutNav />
+  </>
+  );
 }
 
 function RootLayoutNav() {

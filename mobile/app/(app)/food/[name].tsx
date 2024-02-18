@@ -32,24 +32,44 @@ export default function FoodDetails() {
 
     const handleAdd = () => {
       if(!food && cart) // make sure food is defined
-          return;
+        return;
+      console.log('It passed this check')
       
       let newCart: Food[] = []
 
-      if(cart.some((food: Food) => food._id === food._id)){ // if food is already on cart then increment the quantity
+      if(cart.some((f: Food) => f._id === food?._id)){ // if food is already on cart then increment the quantity
+        console.log(food?._id)
           const indexToUpdate = cart.findIndex(cartItem => cartItem._id === food?._id);
+          console.log('index ', indexToUpdate)
           if (indexToUpdate !== -1) {
               // Increment the quantity of the food
-              console.log(cart[indexToUpdate].quantity)
               cart[indexToUpdate].quantity = (cart[indexToUpdate].quantity || 0) + 1;
               // Update the cart state
               setCart([...cart]);
+              console.log('It passed this kill')
           }
+          
       } else {
           // add the food to the cart
+
+          food!['quantity'] = 1
           newCart = [...cart, food!]
           setCart(newCart);   
       }
+  }
+  const handleQuantity = () => {
+    // Find the index of the food in the cart array
+    const indexToUpdate = cart.findIndex(cartItem => cartItem._id === food?._id);
+
+    // Check if the item exists in the cart and its quantity is greater than 0
+    //@ts-ignore
+    if (indexToUpdate !== -1 && cart[indexToUpdate].quantity > 0) {
+        // Decrement the quantity of the item
+        //@ts-ignore
+        return cart[indexToUpdate].quantity;
+    } {
+      return 0
+    }
   }
   const handleSubtract = () => {
 
@@ -109,7 +129,7 @@ export default function FoodDetails() {
             onPress={handleSubtract}
         
             ><Subtract size={25}/></TouchableOpacity>
-            <Text style={{fontSize: 32}} >{food?.quantity}</Text>
+            <Text style={{fontSize: 32}} >{ handleQuantity() }</Text>
             <TouchableOpacity
             onPress={handleAdd}
             ><Plus size={25}/></TouchableOpacity>

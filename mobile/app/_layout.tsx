@@ -1,11 +1,10 @@
+import { useAppStore } from '@/state/store';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
 import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
+import { Stack, Slot, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
 
-import { useColorScheme } from '@/components/useColorScheme';
 
 export {
   // Catch any errors thrown by the Layout component.
@@ -14,6 +13,26 @@ export {
 
 // Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
+
+const InitialLayout = () => {
+
+  const patient = useAppStore((state) => state.patient);
+  const router = useRouter();
+  useEffect(() => {
+    setInitialLayout();
+  }, [patient])
+  const setInitialLayout = async () => {
+    
+      if(patient){ 
+        router.replace('/home/')
+      } else {
+        router.replace('/login')
+      }
+
+  };
+
+  return <Slot />
+}
 
 export default function RootLayout() {
   const [loaded, error] = useFonts({
@@ -43,8 +62,6 @@ function RootLayoutNav() {
 
 
   return (
-      <Stack screenOptions={{ headerShown: false}}>
-        <Stack.Screen name="(tabs)" />
-      </Stack>
+      <InitialLayout />
   );
 }

@@ -21,6 +21,13 @@ class DietOptions(Enum):
     REGULAR = "REGULAR"
     CONSISTANTCARB = "CONSISTANTCARB"
     CARDIAC = "CARDIAC"
+class Category(Enum):
+    DRINK = "DRINK"
+    SOUP = "SOUP"
+    SALAD = "SALAD"
+    ENTREE = "ENTREE"
+    DESERT = "DESERT"
+    SIDE = "SIDE"
 class Meal(Enum):
     BREAKFAST = "BREAKFAST"
     LUNCH = "LUNCH"
@@ -33,20 +40,23 @@ class Status(Enum):
 DietOptionsType = Union[DietOptions, str]
 MealType = Union[Meal, str]
 StatusType = Union[Status, str]
+CategoryType = Union[Category, str]
 
 class Patient(Document):
     first_name: str
     last_name: str
     phone_number: str
+    picture_link: str
     email: str
     diet: List[DietOptionsType]
     allergies: List[str]
 
-class Food: 
+class Food(Document): 
     name: str
     restricted_diets: List[DietOptionsType] = Field(default=[])
+    category: CategoryType
 
-class FoodOrder:
+class FoodOrder(Document):
     meal: Meal
     food: List[Food]
     status: StatusType = Field(default=Status.PROCESSING)

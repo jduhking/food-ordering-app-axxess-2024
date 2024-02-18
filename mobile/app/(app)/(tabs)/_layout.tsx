@@ -12,6 +12,8 @@ export default function TabLayout() {
             options={{
                 title: 'Home',
                 href: '/home',
+                tabBarIcon: () => <HomeIcon size={32}/>,
+                tabBarShowLabel: false
             }}
             />
     </Tabs>

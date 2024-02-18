@@ -3,11 +3,15 @@ import React from 'react'
 import { Category } from '@/models/Category'
 import { screenWidth } from '@/utils/Dimensions'
 
-const Categories = ({ categories } : { categories: Category[]}) => {
+const Categories = ({ categories, setCategoryFilter, categoryFilter } : { categories: Category[], setCategoryFilter: (value: Category | undefined) => void, categoryFilter: Category | undefined }) => {
 
     const categoryRenderItem = ({item} : ListRenderItemInfo<Category>) => {
         const handleSelection = () => {
-            console.log(item)
+          if(categoryFilter === item){
+            setCategoryFilter(undefined)
+          } else {
+            setCategoryFilter(item);
+          }
         }
         return (
           <TouchableOpacity style={styles.category}

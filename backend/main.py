@@ -92,3 +92,8 @@ async def test() -> Patient:
         await user.save()
         
     return user
+
+# @app.get("/test2")
+# async def test2() -> Food:
+
+#     food = await Food.find_one({ "name" : ""})

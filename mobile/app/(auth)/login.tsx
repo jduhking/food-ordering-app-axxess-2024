@@ -4,13 +4,13 @@ import { useRouter } from 'expo-router'
 import { screenHeight } from '@/utils/Dimensions'
 import { useAppStore } from '@/state/store'
 import Patient from '@/models/Patient'
+import { Diets } from '@/models/Diets'
 
 
 const LoginPage = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const setPatient = useAppStore((state) => state.setPatient);
     const router = useRouter();
-
     const handleLogin = () => {
         console.log('Logging in...');
         setLoading(true);
@@ -20,7 +20,7 @@ const LoginPage = () => {
             first_name: 'James',
             picture_link: 'https://images.unsplash.com/photo-1623184663110-89ba5b565eb6?q=80&w=2012&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
             last_name: 'Odebiyi',
-            diet: ['REGULAR'],
+            diet: [Diets.REGULAR],
             allergies: [],
             email: 'jamesbodebiyi@gmail.com',
             phone_number: '469-258-3232'
@@ -29,13 +29,13 @@ const LoginPage = () => {
           console.log(patient)
           setPatient(patient);
           setLoading(false);
-        }, 2000);
+        }, 500);
     }
   return (
     <View  style={styles.container}>
       <Text>You are on the Login Page</Text>
       {
-        loading ? <ActivityIndicator /> : (
+        loading ? (<ActivityIndicator />) : (
           <TouchableOpacity
           onPress={handleLogin}><Text>Login</Text></TouchableOpacity>
         )

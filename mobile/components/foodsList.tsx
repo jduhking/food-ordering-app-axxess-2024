@@ -1,24 +1,35 @@
-import { StyleSheet, Text, View, FlatList, ListRenderItemInfo } from 'react-native'
-import React from 'react'
+import { StyleSheet, Text, View, FlatList, ListRenderItemInfo, TouchableOpacity } from 'react-native'
+import React, { useMemo, useState } from 'react'
 import Food from '@/models/Food'
 import { screenWidth } from '@/utils/Dimensions'
+import { Link, useRouter } from 'expo-router'
+import { Category } from '@/models/Category'
 
-const FoodsList = ({ foods } : { foods : Food[] }) => {
-    
-    const foodRenderItem = ({ item } : ListRenderItemInfo<Food>) => {
-        return (
-          <View style={styles.foodContainer}>
+const FoodsList = ({ foods, categoryFilter } : { foods : Food[], categoryFilter: Category | undefined }) => {
+
+  const filteredFoods = useMemo(() => foods.filter((food) => !categoryFilter || food.category === categoryFilter ), [foods, categoryFilter]);
+
+  const router = useRouter();
+     
+  const foodRenderItem = ({ item } : ListRenderItemInfo<Food>) => {
+
+      return (       /* @ts-ignore */
+        <Link href={`food/${item._id}`}
+        asChild >
+          <TouchableOpacity style={styles.foodContainer} >
             <Text>{item.name}</Text>
-          </View>
-        )
-      }
+          </TouchableOpacity>
+        </Link>
+      )
+    }
+
   return (
-    <View style={{ flex: 1}}>
+    <View style={{ flex: 1, paddingHorizontal: '6%'}}>
     <FlatList 
-    data={foods}
+    data={filteredFoods}
     numColumns={2}
-    contentContainerStyle={{ alignItems: 'center'}}
-    columnWrapperStyle={{ gap: 20}}
+    contentContainerStyle={{ paddingVertical: '5%'}}
+    columnWrapperStyle={{justifyContent:'space-between', }}
     renderItem={foodRenderItem}
     keyExtractor={(food: Food) => { return food._id}}
     />
